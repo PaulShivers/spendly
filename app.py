@@ -1,10 +1,18 @@
 import os
 import sqlite3
+from datetime import datetime
 
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
 
-from database.db import create_user, get_user_by_email, init_db, seed_db
+from database.db import (
+    create_user,
+    get_expense_summary,
+    get_user_by_email,
+    get_user_by_id,
+    init_db,
+    seed_db,
+)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-production")
@@ -68,7 +76,7 @@ def login():
 
         session["user_id"] = user["id"]
         session["user_name"] = user["name"]
-        return redirect(url_for("landing"))
+        return redirect(url_for("profile"))
 
     return render_template("login.html")
 
@@ -95,7 +103,22 @@ def logout():
 
 @app.route("/profile")
 def profile():
-    return "Profile page — coming in Step 4"
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    user = get_user_by_id(session["user_id"])
+    if user is None:
+        session.clear()
+        return redirect(url_for("login"))
+
+    summary = get_expense_summary(session["user_id"])
+
+    dt = datetime.strptime(user["created_at"], "%Y-%m-%d %H:%M:%S")
+    member_since = f"{dt.strftime('%B')} {dt.day}, {dt.year}"
+
+    return render_template(
+        "profile.html", user=user, summary=summary, member_since=member_since
+    )
 
 
 @app.route("/expenses/add")
