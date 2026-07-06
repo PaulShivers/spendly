@@ -1,0 +1,152 @@
+/* ------------------------------------------------------------------ */
+/* Profile page                                                        */
+/* ------------------------------------------------------------------ */
+
+.profile {
+    padding: 3.5rem 2rem;
+}
+
+.profile-inner {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ---- Identity hero ---- */
+
+.profile-hero {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+}
+
+.profile-avatar {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-identity {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.profile-name {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    line-height: 1.2;
+    color: var(--ink);
+    word-break: break-word;
+}
+
+.profile-email {
+    font-size: 0.95rem;
+    color: var(--ink-muted);
+    word-break: break-word;
+}
+
+.profile-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+}
+
+.profile-meta-icon {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+}
+
+/* ---- Stat cards ---- */
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 0.5rem;
+    border-radius: var(--radius-sm);
+    background: var(--paper-warm);
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.stat-card--accent .stat-icon {
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+}
+
+.stat-value {
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    line-height: 1.1;
+    color: var(--ink);
+    word-break: break-word;
+}
+
+.stat-card--accent .stat-value {
+    color: var(--accent);
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 600px) {
+    .profile { padding: 2.5rem 1rem; }
+
+    .profile-hero {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+        padding: 1.75rem;
+    }
+
+    .profile-meta { justify-content: center; }
+
+    .stat-grid { grid-template-columns: 1fr; }
+}
