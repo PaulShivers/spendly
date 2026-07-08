@@ -90,6 +90,62 @@ def get_expense_summary(user_id):
         conn.close()
 
 
+def get_expenses(user_id, limit=None):
+    conn = get_db()
+    try:
+        query = "SELECT * FROM expenses WHERE user_id = ? ORDER BY date DESC, id DESC"
+        params = [user_id]
+        if limit is not None:
+            query += " LIMIT ?"
+            params.append(limit)
+        return conn.execute(query, params).fetchall()
+    finally:
+        conn.close()
+
+
+def get_summary(user_id):
+    conn = get_db()
+    try:
+        row = conn.execute(
+            "SELECT COUNT(*) AS count, "
+            "COALESCE(SUM(amount), 0) AS total, "
+            "COALESCE(SUM(CASE WHEN strftime('%Y-%m', date) = strftime('%Y-%m', 'now') "
+            "THEN amount ELSE 0 END), 0) AS month_total, "
+            "COALESCE(AVG(amount), 0) AS average "
+            "FROM expenses WHERE user_id = ?",
+            (user_id,),
+        ).fetchone()
+
+        top = conn.execute(
+            "SELECT category FROM expenses WHERE user_id = ? "
+            "GROUP BY category ORDER BY SUM(amount) DESC LIMIT 1",
+            (user_id,),
+        ).fetchone()
+
+        return {
+            "count": row["count"],
+            "total": row["total"],
+            "month_total": row["month_total"],
+            "average": row["average"],
+            "top_category": top["category"] if top is not None else None,
+        }
+    finally:
+        conn.close()
+
+
+def get_category_breakdown(user_id):
+    conn = get_db()
+    try:
+        return conn.execute(
+            "SELECT category, COALESCE(SUM(amount), 0) AS total, COUNT(*) AS count "
+            "FROM expenses WHERE user_id = ? "
+            "GROUP BY category ORDER BY total DESC",
+            (user_id,),
+        ).fetchall()
+    finally:
+        conn.close()
+
+
 def seed_db():
     conn = get_db()
     existing = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]

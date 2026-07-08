@@ -134,6 +134,20 @@
     color: var(--accent);
 }
 
+/* ---- Cross links ---- */
+
+.profile-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.profile-links .btn-ghost {
+    flex: 1;
+    min-width: 200px;
+    text-align: center;
+}
+
 /* ---- Responsive ---- */
 
 @media (max-width: 600px) {
