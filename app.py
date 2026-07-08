@@ -7,7 +7,9 @@ from werkzeug.security import check_password_hash
 
 from database.db import (
     create_user,
-    get_expense_summary,
+    get_category_breakdown,
+    get_expenses,
+    get_summary,
     get_user_by_email,
     get_user_by_id,
     init_db,
@@ -111,13 +113,35 @@ def profile():
         session.clear()
         return redirect(url_for("login"))
 
-    summary = get_expense_summary(session["user_id"])
+    summary = get_summary(session["user_id"])
 
     dt = datetime.strptime(user["created_at"], "%Y-%m-%d %H:%M:%S")
     member_since = f"{dt.strftime('%B')} {dt.day}, {dt.year}"
 
     return render_template(
         "profile.html", user=user, summary=summary, member_since=member_since
+    )
+
+
+@app.route("/transactions")
+def transactions():
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    expenses = get_expenses(session["user_id"])
+    return render_template("transactions.html", expenses=expenses)
+
+
+@app.route("/categories")
+def categories():
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    breakdown = get_category_breakdown(session["user_id"])
+    overall_total = sum(row["total"] for row in breakdown)
+
+    return render_template(
+        "categories.html", breakdown=breakdown, overall_total=overall_total
     )
 
 

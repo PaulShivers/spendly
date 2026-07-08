@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Transactions — Spendly{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/transactions.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="profile">
+    <div class="profile-inner">
+
+        <header class="txn-header">
+            <h1 class="txn-title">Transactions</h1>
+            <p class="txn-subtitle">Every expense, newest first.</p>
+        </header>
+
+        {% if expenses %}
+        <div class="txn-card">
+            <ul class="txn-list">
+                {% for expense in expenses %}
+                <li class="txn-row">
+                    <div class="txn-main">
+                        <span class="txn-category">{{ expense["category"] }}</span>
+                        <span class="txn-description">
+                            {{ expense["description"] if expense["description"] else "—" }}
+                        </span>
+                    </div>
+                    <div class="txn-meta">
+                        <span class="txn-date">{{ expense["date"] }}</span>
+                        <span class="txn-amount">${{ "{:,.2f}".format(expense["amount"]) }}</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <div class="txn-empty">
+            <div class="txn-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"></path>
+                    <path d="M8 7h8M8 11h8M8 15h5"></path>
+                </svg>
+            </div>
+            <h2 class="txn-empty-title">No transactions yet</h2>
+            <p class="txn-empty-body">Once you record an expense, it will show up here.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}
