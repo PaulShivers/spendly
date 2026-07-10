@@ -6,6 +6,8 @@ from flask import Flask, flash, redirect, render_template, request, session, url
 from werkzeug.security import check_password_hash
 
 from database.db import (
+    CATEGORIES,
+    create_expense,
     create_user,
     get_category_breakdown,
     get_expenses,
@@ -220,9 +222,48 @@ def analytics():
     return render_template("analytics.html")
 
 
-@app.route("/expenses/add")
+@app.route("/expenses/add", methods=["GET", "POST"])
 def add_expense():
-    return "Add expense — coming in Step 7"
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        raw_amount = request.form.get("amount", "").strip()
+        category = request.form.get("category", "").strip()
+        date_value = _valid_date(request.form.get("date", "").strip())
+        description = request.form.get("description", "").strip() or None
+
+        try:
+            amount = float(raw_amount)
+        except ValueError:
+            amount = None
+
+        form = {
+            "amount": raw_amount,
+            "category": category,
+            "date": request.form.get("date", "").strip(),
+            "description": request.form.get("description", "").strip(),
+        }
+
+        if amount is None or amount <= 0:
+            flash("Enter an amount greater than 0.")
+            return render_template("add_expense.html", categories=CATEGORIES, form=form,
+                                   today=date.today().isoformat())
+        if category not in CATEGORIES:
+            flash("Choose a valid category.")
+            return render_template("add_expense.html", categories=CATEGORIES, form=form,
+                                   today=date.today().isoformat())
+        if date_value is None:
+            flash("Enter a valid date.")
+            return render_template("add_expense.html", categories=CATEGORIES, form=form,
+                                   today=date.today().isoformat())
+
+        create_expense(session["user_id"], amount, category, date_value, description)
+        flash("Expense added.")
+        return redirect(url_for("profile"))
+
+    return render_template("add_expense.html", categories=CATEGORIES, form={},
+                           today=date.today().isoformat())
 
 
 @app.route("/expenses/<int:id>/edit")
