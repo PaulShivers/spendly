@@ -90,11 +90,18 @@ def get_expense_summary(user_id):
         conn.close()
 
 
-def get_expenses(user_id, limit=None):
+def get_expenses(user_id, limit=None, start_date=None, end_date=None):
     conn = get_db()
     try:
-        query = "SELECT * FROM expenses WHERE user_id = ? ORDER BY date DESC, id DESC"
+        query = "SELECT * FROM expenses WHERE user_id = ?"
         params = [user_id]
+        if start_date is not None:
+            query += " AND date >= ?"
+            params.append(start_date)
+        if end_date is not None:
+            query += " AND date <= ?"
+            params.append(end_date)
+        query += " ORDER BY date DESC, id DESC"
         if limit is not None:
             query += " LIMIT ?"
             params.append(limit)
@@ -103,23 +110,32 @@ def get_expenses(user_id, limit=None):
         conn.close()
 
 
-def get_summary(user_id):
+def get_summary(user_id, start_date=None, end_date=None):
     conn = get_db()
     try:
+        date_clause = ""
+        date_params = []
+        if start_date is not None:
+            date_clause += " AND date >= ?"
+            date_params.append(start_date)
+        if end_date is not None:
+            date_clause += " AND date <= ?"
+            date_params.append(end_date)
+
         row = conn.execute(
             "SELECT COUNT(*) AS count, "
             "COALESCE(SUM(amount), 0) AS total, "
             "COALESCE(SUM(CASE WHEN strftime('%Y-%m', date) = strftime('%Y-%m', 'now') "
             "THEN amount ELSE 0 END), 0) AS month_total, "
             "COALESCE(AVG(amount), 0) AS average "
-            "FROM expenses WHERE user_id = ?",
-            (user_id,),
+            "FROM expenses WHERE user_id = ?" + date_clause,
+            [user_id] + date_params,
         ).fetchone()
 
         top = conn.execute(
-            "SELECT category FROM expenses WHERE user_id = ? "
-            "GROUP BY category ORDER BY SUM(amount) DESC LIMIT 1",
-            (user_id,),
+            "SELECT category FROM expenses WHERE user_id = ?" + date_clause +
+            " GROUP BY category ORDER BY SUM(amount) DESC LIMIT 1",
+            [user_id] + date_params,
         ).fetchone()
 
         return {
@@ -133,15 +149,22 @@ def get_summary(user_id):
         conn.close()
 
 
-def get_category_breakdown(user_id):
+def get_category_breakdown(user_id, start_date=None, end_date=None):
     conn = get_db()
     try:
-        return conn.execute(
+        query = (
             "SELECT category, COALESCE(SUM(amount), 0) AS total, COUNT(*) AS count "
-            "FROM expenses WHERE user_id = ? "
-            "GROUP BY category ORDER BY total DESC",
-            (user_id,),
-        ).fetchall()
+            "FROM expenses WHERE user_id = ?"
+        )
+        params = [user_id]
+        if start_date is not None:
+            query += " AND date >= ?"
+            params.append(start_date)
+        if end_date is not None:
+            query += " AND date <= ?"
+            params.append(end_date)
+        query += " GROUP BY category ORDER BY total DESC"
+        return conn.execute(query, params).fetchall()
     finally:
         conn.close()
 

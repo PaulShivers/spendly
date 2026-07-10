@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from datetime import datetime
+from datetime import date, datetime, timedelta
 
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
@@ -22,6 +22,57 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-production")
 with app.app_context():
     init_db()
     seed_db()
+
+
+# ------------------------------------------------------------------ #
+# Helpers                                                             #
+# ------------------------------------------------------------------ #
+
+def _format_day(value):
+    """Display a YYYY-MM-DD string as e.g. 'Jul 1, 2026'."""
+    dt = datetime.strptime(value, "%Y-%m-%d")
+    return f"{dt.strftime('%b')} {dt.day}, {dt.year}"
+
+
+def _valid_date(value):
+    """Return a canonical YYYY-MM-DD string if value is a valid date, else None."""
+    if not value:
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date().isoformat()
+    except (ValueError, TypeError):
+        return None
+
+
+def resolve_date_range(preset, start, end):
+    """Resolve profile filter params to (start_date, end_date, active_preset, label).
+
+    A valid preset wins; otherwise a custom start/end range is used (malformed
+    bounds are ignored); otherwise the default is all time.
+    """
+    today = date.today()
+    presets = {
+        "month": (today.replace(day=1).isoformat(), today.isoformat(), "This month"),
+        "30d": ((today - timedelta(days=29)).isoformat(), today.isoformat(), "Last 30 days"),
+        "year": (today.replace(month=1, day=1).isoformat(), today.isoformat(), "This year"),
+        "all": (None, None, "All time"),
+    }
+    if preset in presets:
+        start_date, end_date, label = presets[preset]
+        return start_date, end_date, preset, label
+
+    start_date = _valid_date(start)
+    end_date = _valid_date(end)
+    if start_date or end_date:
+        if start_date and end_date:
+            label = f"{_format_day(start_date)} – {_format_day(end_date)}"
+        elif start_date:
+            label = f"From {_format_day(start_date)}"
+        else:
+            label = f"Up to {_format_day(end_date)}"
+        return start_date, end_date, None, label
+
+    return None, None, "all", "All time"
 
 
 # ------------------------------------------------------------------ #
@@ -113,9 +164,17 @@ def profile():
         session.clear()
         return redirect(url_for("login"))
 
-    summary = get_summary(session["user_id"])
-    recent = get_expenses(session["user_id"], limit=5)
-    breakdown = get_category_breakdown(session["user_id"])
+    start_date, end_date, active_preset, period_label = resolve_date_range(
+        request.args.get("preset"),
+        request.args.get("start"),
+        request.args.get("end"),
+    )
+
+    summary = get_summary(session["user_id"], start_date, end_date)
+    recent = get_expenses(
+        session["user_id"], limit=5, start_date=start_date, end_date=end_date
+    )
+    breakdown = get_category_breakdown(session["user_id"], start_date, end_date)
     overall_total = sum(row["total"] for row in breakdown)
 
     dt = datetime.strptime(user["created_at"], "%Y-%m-%d %H:%M:%S")
@@ -129,6 +188,10 @@ def profile():
         breakdown=breakdown,
         overall_total=overall_total,
         member_since=member_since,
+        active_preset=active_preset,
+        period_label=period_label,
+        start_date=start_date,
+        end_date=end_date,
     )
 
 
