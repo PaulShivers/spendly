@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics — Spendly{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/analytics.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="analytics-soon">
+    <div class="analytics-soon-inner">
+
+        <span class="analytics-badge">
+            <span class="analytics-badge-dot"></span>
+            Coming soon
+        </span>
+
+        <div class="analytics-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="20" x2="12" y2="10"></line>
+                <line x1="18" y1="20" x2="18" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="16"></line>
+            </svg>
+        </div>
+
+        <h1 class="analytics-title">Analytics is on the way</h1>
+        <p class="analytics-subtitle">
+            We're building charts and insights to help you understand your spending
+            over time — trends, category deep-dives, and monthly comparisons. Check
+            back soon.
+        </p>
+
+        <ul class="analytics-preview">
+            <li class="analytics-preview-item">
+                <span class="analytics-preview-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 3v18h18"></path>
+                        <path d="m19 9-5 5-4-4-3 3"></path>
+                    </svg>
+                </span>
+                <span class="analytics-preview-text">Spending trends over time</span>
+            </li>
+            <li class="analytics-preview-item">
+                <span class="analytics-preview-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                        <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                    </svg>
+                </span>
+                <span class="analytics-preview-text">Category breakdowns</span>
+            </li>
+            <li class="analytics-preview-item">
+                <span class="analytics-preview-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                        <path d="M16 2v4M8 2v4M3 10h18"></path>
+                    </svg>
+                </span>
+                <span class="analytics-preview-text">Month-over-month comparisons</span>
+            </li>
+        </ul>
+
+        <a href="{{ url_for('profile') }}" class="btn-primary analytics-back">Back to profile</a>
+
+    </div>
+</section>
+
+{% endblock %}

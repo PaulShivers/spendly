@@ -92,7 +92,7 @@ Placeholders (return a string, implemented in later steps): `GET /expenses/add`,
 | 3 | Login & Logout (sessions, session-aware navbar) | ✅ Done |
 | 4 | Profile page (login-protected, read-only summary) | ✅ Done |
 | 5 | Profile & reporting routes (transactions, enriched summary, category breakdown) | ✅ Done |
-| 6 | _Unassigned_ | ⏳ Not planned |
+| 6 | Date filter for profile page (preset + custom range, whole-profile reporting) | ✅ Done |
 | 7 | Add expense (`/expenses/add`) | ⏳ Placeholder |
 | 8 | Edit expense (`/expenses/<id>/edit`) | ⏳ Placeholder |
 | 9 | Delete expense (`/expenses/<id>/delete`) | ⏳ Placeholder |

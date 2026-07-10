@@ -21,6 +21,9 @@
             <div class="nav-links">
                 {% if session.user_id %}
                 <a href="{{ url_for('transactions') }}">Transactions</a>
+                <a href="{{ url_for('analytics') }}"
+                   class="{{ 'nav-active' if request.endpoint == 'analytics' else '' }}"
+                   {% if request.endpoint == 'analytics' %}aria-current="page"{% endif %}>Analytics</a>
                 <a href="{{ url_for('profile') }}">{{ session.user_name }}</a>
                 <a href="{{ url_for('logout') }}" class="nav-cta">Sign out</a>
                 {% else %}
