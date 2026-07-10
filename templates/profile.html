@@ -80,10 +80,67 @@
             </article>
         </div>
 
-        <div class="profile-links">
-            <a href="{{ url_for('transactions') }}" class="btn-ghost">View all transactions</a>
-            <a href="{{ url_for('categories') }}" class="btn-ghost">Spending by category</a>
-        </div>
+        <section class="profile-section">
+            <div class="profile-section-head">
+                <h2 class="profile-section-title">Recent transactions</h2>
+                <a href="{{ url_for('transactions') }}" class="profile-section-link">View all</a>
+            </div>
+            {% if recent %}
+            <ul class="recent-list">
+                {% for expense in recent %}
+                <li class="recent-row">
+                    <div class="recent-main">
+                        <span class="recent-category">{{ expense["category"] }}</span>
+                        <span class="recent-description">
+                            {{ expense["description"] if expense["description"] else "—" }}
+                        </span>
+                    </div>
+                    <div class="recent-meta">
+                        <span class="recent-date">{{ expense["date"] }}</span>
+                        <span class="recent-amount">${{ "{:,.2f}".format(expense["amount"]) }}</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="breakdown-empty">No transactions yet.</p>
+            {% endif %}
+        </section>
+
+        <section class="profile-section">
+            <div class="breakdown">
+                <div class="breakdown-heading">
+                    <h2 class="breakdown-title">Spending by category</h2>
+                    {% if breakdown %}
+                    <span class="breakdown-total">${{ "{:,.2f}".format(overall_total) }} total</span>
+                    {% endif %}
+                </div>
+                {% if breakdown %}
+                <ul class="breakdown-list">
+                    {% for row in breakdown %}
+                    {% set share = (row["total"] / overall_total * 100) if overall_total else 0 %}
+                    <li class="breakdown-item">
+                        <div class="breakdown-item-top">
+                            <span class="breakdown-name">{{ row["category"] }}</span>
+                            <span class="breakdown-amount">${{ "{:,.2f}".format(row["total"]) }}</span>
+                        </div>
+                        <div class="breakdown-bar-track" role="presentation">
+                            <div class="breakdown-bar-fill" style="width: {{ "%.1f"|format(share) }}%;"></div>
+                        </div>
+                        <div class="breakdown-item-bottom">
+                            <span class="breakdown-count">
+                                {{ row["count"] }} expense{{ "" if row["count"] == 1 else "s" }}
+                            </span>
+                            <span class="breakdown-share">{{ "%.0f"|format(share) }}%</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="breakdown-empty">No spending to break down yet.</p>
+                {% endif %}
+            </div>
+        </section>
 
     </div>
 </section>

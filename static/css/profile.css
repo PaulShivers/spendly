@@ -134,18 +134,99 @@
     color: var(--accent);
 }
 
-/* ---- Cross links ---- */
+/* ---- Sections (recent transactions + breakdown) ---- */
 
-.profile-links {
+.profile-section {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.profile-section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
     gap: 1rem;
 }
 
-.profile-links .btn-ghost {
-    flex: 1;
-    min-width: 200px;
-    text-align: center;
+.profile-section-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.2;
+    color: var(--ink);
+}
+
+.profile-section-link {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--accent);
+}
+
+.profile-section-link:hover {
+    color: var(--accent-2);
+}
+
+/* ---- Recent transactions preview ---- */
+
+.recent-list {
+    list-style: none;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.recent-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.recent-row:last-child {
+    border-bottom: none;
+}
+
+.recent-main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.recent-category {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.recent-description {
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+    word-break: break-word;
+}
+
+.recent-meta {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.15rem;
+}
+
+.recent-date {
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+}
+
+.recent-amount {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    line-height: 1.1;
+    color: var(--accent);
+    white-space: nowrap;
 }
 
 /* ---- Responsive ---- */

@@ -16,6 +16,39 @@
             <p class="txn-subtitle">Every expense, newest first.</p>
         </header>
 
+        <div class="breakdown">
+            <div class="breakdown-heading">
+                <h2 class="breakdown-title">Spending by category</h2>
+                {% if breakdown %}
+                <span class="breakdown-total">${{ "{:,.2f}".format(overall_total) }} total</span>
+                {% endif %}
+            </div>
+            {% if breakdown %}
+            <ul class="breakdown-list">
+                {% for row in breakdown %}
+                {% set share = (row["total"] / overall_total * 100) if overall_total else 0 %}
+                <li class="breakdown-item">
+                    <div class="breakdown-item-top">
+                        <span class="breakdown-name">{{ row["category"] }}</span>
+                        <span class="breakdown-amount">${{ "{:,.2f}".format(row["total"]) }}</span>
+                    </div>
+                    <div class="breakdown-bar-track" role="presentation">
+                        <div class="breakdown-bar-fill" style="width: {{ "%.1f"|format(share) }}%;"></div>
+                    </div>
+                    <div class="breakdown-item-bottom">
+                        <span class="breakdown-count">
+                            {{ row["count"] }} expense{{ "" if row["count"] == 1 else "s" }}
+                        </span>
+                        <span class="breakdown-share">{{ "%.0f"|format(share) }}%</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="breakdown-empty">No spending to break down yet.</p>
+            {% endif %}
+        </div>
+
         {% if expenses %}
         <div class="txn-card">
             <ul class="txn-list">

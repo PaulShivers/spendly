@@ -79,7 +79,7 @@ helpers exactly. Current helpers: `create_user`, `get_user_by_email`, `get_user_
 
 Public: `GET /` (landing), `GET|POST /register`, `GET|POST /login`, `GET /terms`,
 `GET /privacy`.
-Authed: `GET /logout`, `GET /profile`, `GET /transactions`, `GET /categories`.
+Authed: `GET /logout`, `GET /profile`, `GET /transactions`.
 Placeholders (return a string, implemented in later steps): `GET /expenses/add`,
 `GET /expenses/<id>/edit`, `GET /expenses/<id>/delete`.
 

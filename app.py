@@ -114,12 +114,21 @@ def profile():
         return redirect(url_for("login"))
 
     summary = get_summary(session["user_id"])
+    recent = get_expenses(session["user_id"], limit=5)
+    breakdown = get_category_breakdown(session["user_id"])
+    overall_total = sum(row["total"] for row in breakdown)
 
     dt = datetime.strptime(user["created_at"], "%Y-%m-%d %H:%M:%S")
     member_since = f"{dt.strftime('%B')} {dt.day}, {dt.year}"
 
     return render_template(
-        "profile.html", user=user, summary=summary, member_since=member_since
+        "profile.html",
+        user=user,
+        summary=summary,
+        recent=recent,
+        breakdown=breakdown,
+        overall_total=overall_total,
+        member_since=member_since,
     )
 
 
@@ -129,19 +138,14 @@ def transactions():
         return redirect(url_for("login"))
 
     expenses = get_expenses(session["user_id"])
-    return render_template("transactions.html", expenses=expenses)
-
-
-@app.route("/categories")
-def categories():
-    if not session.get("user_id"):
-        return redirect(url_for("login"))
-
     breakdown = get_category_breakdown(session["user_id"])
     overall_total = sum(row["total"] for row in breakdown)
 
     return render_template(
-        "categories.html", breakdown=breakdown, overall_total=overall_total
+        "transactions.html",
+        expenses=expenses,
+        breakdown=breakdown,
+        overall_total=overall_total,
     )
 
 
