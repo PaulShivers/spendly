@@ -80,8 +80,7 @@ helpers exactly. Current helpers: `create_user`, `get_user_by_email`, `get_user_
 Public: `GET /` (landing), `GET|POST /register`, `GET|POST /login`, `GET /terms`,
 `GET /privacy`.
 Authed: `GET /logout`, `GET /profile`, `GET /transactions`, `GET /analytics`,
-`GET|POST /expenses/add`, `GET|POST /expenses/<id>/edit`.
-Placeholders (return a string, implemented in later steps): `GET /expenses/<id>/delete`.
+`GET|POST /expenses/add`, `GET|POST /expenses/<id>/edit`, `POST /expenses/<id>/delete`.
 
 ## Roadmap
 
@@ -95,7 +94,7 @@ Placeholders (return a string, implemented in later steps): `GET /expenses/<id>/
 | 6 | Date filter for profile page (preset + custom range, whole-profile reporting) | ✅ Done |
 | 7 | Add expense (`/expenses/add`) | ✅ Done |
 | 8 | Edit expense (`/expenses/<id>/edit`) | ✅ Done |
-| 9 | Delete expense (`/expenses/<id>/delete`) | ⏳ Placeholder |
+| 9 | Delete expense (`/expenses/<id>/delete`) | ✅ Done |
 
 Specs for completed steps live in `.claude/specs/`. Use the `/create-spec` command to
 plan the next step (it branches from `master` and writes a new spec). Mark a step done
