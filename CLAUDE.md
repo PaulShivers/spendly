@@ -79,9 +79,9 @@ helpers exactly. Current helpers: `create_user`, `get_user_by_email`, `get_user_
 
 Public: `GET /` (landing), `GET|POST /register`, `GET|POST /login`, `GET /terms`,
 `GET /privacy`.
-Authed: `GET /logout`, `GET /profile`, `GET /transactions`.
-Placeholders (return a string, implemented in later steps): `GET /expenses/add`,
-`GET /expenses/<id>/edit`, `GET /expenses/<id>/delete`.
+Authed: `GET /logout`, `GET /profile`, `GET /transactions`, `GET /analytics`,
+`GET|POST /expenses/add`, `GET|POST /expenses/<id>/edit`.
+Placeholders (return a string, implemented in later steps): `GET /expenses/<id>/delete`.
 
 ## Roadmap
 
@@ -93,8 +93,8 @@ Placeholders (return a string, implemented in later steps): `GET /expenses/add`,
 | 4 | Profile page (login-protected, read-only summary) | ✅ Done |
 | 5 | Profile & reporting routes (transactions, enriched summary, category breakdown) | ✅ Done |
 | 6 | Date filter for profile page (preset + custom range, whole-profile reporting) | ✅ Done |
-| 7 | Add expense (`/expenses/add`) | ⏳ Placeholder |
-| 8 | Edit expense (`/expenses/<id>/edit`) | ⏳ Placeholder |
+| 7 | Add expense (`/expenses/add`) | ✅ Done |
+| 8 | Edit expense (`/expenses/<id>/edit`) | ✅ Done |
 | 9 | Delete expense (`/expenses/<id>/delete`) | ⏳ Placeholder |
 
 Specs for completed steps live in `.claude/specs/`. Use the `/create-spec` command to
