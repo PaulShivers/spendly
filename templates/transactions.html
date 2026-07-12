@@ -64,6 +64,7 @@
                         <span class="txn-date">{{ expense["date"] }}</span>
                         <span class="txn-amount">${{ "{:,.2f}".format(expense["amount"]) }}</span>
                     </div>
+                    <a class="txn-edit" href="{{ url_for('edit_expense', id=expense['id']) }}">Edit</a>
                 </li>
                 {% endfor %}
             </ul>

@@ -92,6 +92,23 @@
     white-space: nowrap;
 }
 
+.txn-edit {
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.txn-edit:hover {
+    background: var(--paper-warm);
+    border-color: var(--accent);
+}
+
 /* ---- Empty state ---- */
 
 .txn-empty {
