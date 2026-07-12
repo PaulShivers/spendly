@@ -10,12 +10,14 @@ from database.db import (
     create_expense,
     create_user,
     get_category_breakdown,
+    get_expense_by_id,
     get_expenses,
     get_summary,
     get_user_by_email,
     get_user_by_id,
     init_db,
     seed_db,
+    update_expense,
 )
 
 app = Flask(__name__)
@@ -266,9 +268,59 @@ def add_expense():
                            today=date.today().isoformat())
 
 
-@app.route("/expenses/<int:id>/edit")
+@app.route("/expenses/<int:id>/edit", methods=["GET", "POST"])
 def edit_expense(id):
-    return "Edit expense — coming in Step 8"
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    expense = get_expense_by_id(id, session["user_id"])
+    if expense is None:
+        flash("Expense not found.")
+        return redirect(url_for("transactions"))
+
+    if request.method == "POST":
+        raw_amount = request.form.get("amount", "").strip()
+        category = request.form.get("category", "").strip()
+        date_value = _valid_date(request.form.get("date", "").strip())
+        description = request.form.get("description", "").strip() or None
+
+        try:
+            amount = float(raw_amount)
+        except ValueError:
+            amount = None
+
+        form = {
+            "amount": raw_amount,
+            "category": category,
+            "date": request.form.get("date", "").strip(),
+            "description": request.form.get("description", "").strip(),
+        }
+
+        if amount is None or amount <= 0:
+            flash("Enter an amount greater than 0.")
+            return render_template("edit_expense.html", categories=CATEGORIES,
+                                   form=form, expense=expense)
+        if category not in CATEGORIES:
+            flash("Choose a valid category.")
+            return render_template("edit_expense.html", categories=CATEGORIES,
+                                   form=form, expense=expense)
+        if date_value is None:
+            flash("Enter a valid date.")
+            return render_template("edit_expense.html", categories=CATEGORIES,
+                                   form=form, expense=expense)
+
+        update_expense(id, session["user_id"], amount, category, date_value, description)
+        flash("Expense updated.")
+        return redirect(url_for("transactions"))
+
+    form = {
+        "amount": expense["amount"],
+        "category": expense["category"],
+        "date": expense["date"],
+        "description": expense["description"] or "",
+    }
+    return render_template("edit_expense.html", categories=CATEGORIES,
+                           form=form, expense=expense)
 
 
 @app.route("/expenses/<int:id>/delete")
