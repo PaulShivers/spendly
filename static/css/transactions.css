@@ -109,6 +109,29 @@
     border-color: var(--accent);
 }
 
+.txn-delete-form {
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.txn-delete {
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--danger);
+    background: transparent;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.txn-delete:hover {
+    background: var(--danger-light);
+    border-color: var(--danger);
+}
+
 /* ---- Empty state ---- */
 
 .txn-empty {
